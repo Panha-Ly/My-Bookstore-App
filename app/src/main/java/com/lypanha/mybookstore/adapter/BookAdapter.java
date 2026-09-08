@@ -100,7 +100,7 @@ public class BookAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         if(orientation == HORIZONTAL_VIEW){
             HorizontalBookViewHolder bookViewHolder = (HorizontalBookViewHolder) holder;
-            Book book = (Book) items.get(position).getObject();
+            Book book = (Book) items.get(position).getItem();
 
             bookViewHolder.bookImage.setImageResource(book.getImageId());
             bookViewHolder.bookName.setText(book.getName());
@@ -116,7 +116,7 @@ public class BookAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (orientation == VERTICAL_VIEW) {
             if(getItemViewType(position) == BOOK){
                 VerticalBookViewHolder bookViewHolder = (VerticalBookViewHolder) holder;
-                Book book = (Book) items.get(position).getObject();
+                Book book = (Book) items.get(position).getItem();
 
                 bookViewHolder.bookImage.setImageResource(book.getImageId());
                 bookViewHolder.bookName.setText(book.getName());
@@ -130,7 +130,7 @@ public class BookAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 });
             } else {
                 BookSeriesViewHolder bookViewHolder = (BookSeriesViewHolder) holder;
-                BookSeries bookSeries = (BookSeries) items.get(position).getObject();
+                BookSeries bookSeries = (BookSeries) items.get(position).getItem();
 
                 bookViewHolder.bookSeriesName.setText(bookSeries.getName());
                 bookViewHolder.bookSeriesName.setText(bookSeries.getName());
