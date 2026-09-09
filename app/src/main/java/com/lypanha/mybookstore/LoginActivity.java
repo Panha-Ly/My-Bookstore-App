@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     boolean loggedIn = false;
                     for (User user :
-                            Utils.getInstance().getUsers()) {
+                            Utils.INSTANCE.getUsers()) {
                         if (user.getEmail().contentEquals(edtEmail.getText()) && user.getPassword().contentEquals(edtPassword.getText())) {
                             user.setLoginStatus(LOGGED_IN);
                             loggedIn = true;

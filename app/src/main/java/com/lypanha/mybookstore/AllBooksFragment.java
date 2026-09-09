@@ -39,7 +39,7 @@ public class AllBooksFragment extends Fragment {
         ArrayList<Item> items = new ArrayList<>();
         // Add all books to the list
         for (Book book :
-                Utils.getInstance().getAllBooks()) {
+                Utils.INSTANCE.getAllBooks()) {
             items.add(new Item(Item.BOOK, book));
 
         }

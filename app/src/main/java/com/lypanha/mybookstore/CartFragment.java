@@ -40,7 +40,7 @@ public class CartFragment extends Fragment {
         noBooksInCart = view.findViewById(R.id.noBooksInCart);
         items = new ArrayList<>();
         for (Book book :
-                Utils.getInstance().getBooksInCart()) {
+                Utils.INSTANCE.getBooksInCart()) {
             items.add(new Item(Item.BOOK,book));
         }
         if (items.isEmpty()) {
@@ -59,7 +59,7 @@ public class CartFragment extends Fragment {
     public void onResume() {
         super.onResume();
         items.clear();
-        for (Book book : Utils.getInstance().getBooksInCart()) {
+        for (Book book : Utils.INSTANCE.getBooksInCart()) {
             items.add(new Item(Item.BOOK,book));
         }
         if (items.isEmpty()) {

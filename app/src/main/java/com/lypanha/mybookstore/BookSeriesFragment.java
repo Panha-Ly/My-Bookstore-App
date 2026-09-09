@@ -32,7 +32,7 @@ public class BookSeriesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ArrayList<Item> items = new ArrayList<>(Utils.getInstance().getAllBooksBySeries());
+        ArrayList<Item> items = new ArrayList<>(Utils.INSTANCE.getAllBooksBySeries());
 
         bookSeriesRecView = (RecyclerView) view.findViewById(R.id.bookSeriesRecView);
         bookSeriesRecView.setAdapter(new BookAdapter(items, requireContext(), BookAdapter.VERTICAL_VIEW, BookAdapter.BOOK_SERIES));

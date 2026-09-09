@@ -75,7 +75,7 @@ public class BookActivity extends AppCompatActivity {
             int bookId = intent.getIntExtra("bookId", -1);
 
             if (bookId != -1) {
-                Book currentBook = Utils.getInstance().getBookById(bookId);
+                Book currentBook = Utils.INSTANCE.getBookById(bookId);
                 if (currentBook != null) {
                     imgBook.setImageResource(currentBook.getImageId());
                     txtName.setText(currentBook.getName());
@@ -88,7 +88,7 @@ public class BookActivity extends AppCompatActivity {
                     if (fragmentName.equals(BookAdapter.CART)) {
                         btnCart.setText(getText(R.string.remove_from_cart));
                         btnCart.setOnClickListener(v -> {
-                            if(Utils.getInstance().removeFromCart(bookId)){
+                            if(Utils.INSTANCE.removeFromCart(bookId)){
                                 Toast.makeText(this, "Removed from Cart", Toast.LENGTH_SHORT).show();
 
                             } else {
@@ -98,7 +98,7 @@ public class BookActivity extends AppCompatActivity {
                     } else {
                         btnCart.setText(getText(R.string.add_to_cart));
                         btnCart.setOnClickListener(v -> {
-                            if(Utils.getInstance().addToCart(bookId)){
+                            if(Utils.INSTANCE.addToCart(bookId)){
                                 Toast.makeText(this, "Added to Cart", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(this, "Already added to Cart", Toast.LENGTH_SHORT).show();

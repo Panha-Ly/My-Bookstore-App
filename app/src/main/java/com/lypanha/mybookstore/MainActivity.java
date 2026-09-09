@@ -42,11 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
 
-
-        // Database instance
-        Utils.getInstance();
         // Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -114,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         btnLogout.setOnClickListener(v -> {
             for (User user :
-                    Utils.getInstance().getUsers()) {
+                    Utils.INSTANCE.getUsers()) {
                 if(user.isLoginStatus()){
                     user.setLoginStatus(User.LOGGED_OUT);
                 }
@@ -165,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         for (User user :
-                Utils.getInstance().getUsers()) {
+                Utils.INSTANCE.getUsers()) {
             if(user.isLoginStatus()){
                 imgProfile.setImageResource(user.getImageId());
                 txtName.setText(user.getUsername());

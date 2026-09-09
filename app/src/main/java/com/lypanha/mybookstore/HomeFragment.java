@@ -39,7 +39,7 @@ public class HomeFragment extends Fragment {
         // test data
         ArrayList<Item> popItems = new ArrayList<>();
         for (Book book :
-                Utils.getInstance().getAllBooks()) {
+                Utils.INSTANCE.getAllBooks()) {
             if (book.getId() == 21 || book.getId() == 19 || book.getId() == 1 || book.getId() == 13){
                 popItems.add(new Item(Item.BOOK,book));
             }
@@ -47,7 +47,7 @@ public class HomeFragment extends Fragment {
 
         ArrayList<Item> newItems = new ArrayList<>();
         for (Book book :
-                Utils.getInstance().getAllBooks()) {
+                Utils.INSTANCE.getAllBooks()) {
             if (book.getId() == 20 || book.getId() == 24 || book.getId() == 18){
                 newItems.add(new Item(Item.BOOK,book));
             }
