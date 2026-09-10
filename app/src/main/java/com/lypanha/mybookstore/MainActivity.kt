@@ -1,175 +1,205 @@
-package com.lypanha.mybookstore;
+package com.lypanha.mybookstore
 
+import android.content.Intent
+import android.os.Bundle
+import android.view.MenuItem
+import android.view.View
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.navigation.NavigationView
+import com.lypanha.mybookstore.model.User
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-
-import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-
-import com.google.android.material.navigation.NavigationView;
-
-import com.lypanha.mybookstore.model.User;
-
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
+class MainActivity : AppCompatActivity() {
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navigationView: NavigationView
 
     // Nav Header Views
-    private RelativeLayout navHeader, userProfile;
-    private Button btnLogin, btnLogout;
+    private lateinit var navHeader: RelativeLayout
+    private lateinit var btnLogin: Button
+    private lateinit var userProfile: RelativeLayout
+    private lateinit var imgProfile: ImageView
+    private lateinit var txtName: TextView
+    private lateinit var txtEmail: TextView
+    private lateinit var btnLogout: Button
 
-    private TextView txtName, txtEmail;
-    private ImageView imgProfile;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
         // Toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
+        val toolbar: Toolbar = findViewById<Toolbar>(R.id.toolbar)
+            .apply { title = "" }
+        setSupportActionBar(toolbar)
 
 
         // Navigation drawer
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        drawerLayout = findViewById(R.id.drawer_layout)
+        navigationView = findViewById(R.id.nav_view)
+        navigationView.setNavigationItemSelectedListener(object :
+            NavigationView.OnNavigationItemSelectedListener {
+                override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
+                    when (menuItem.itemId) {
+                        R.id.nav_home -> {
+                            supportFragmentManager
+                                .beginTransaction()
+                                .replace(R.id.frame_container, HomeFragment())
+                                .commit()
+                            drawerLayout.closeDrawer(GravityCompat.START)
+                            return true
+                        }
+                        R.id.nav_cart -> {
+                            supportFragmentManager
+                                .beginTransaction()
+                                .replace(R.id.frame_container, CartFragment())
+                                .commit()
+                            drawerLayout.closeDrawer(GravityCompat.START)
+                            return true
+                        }
+                        R.id.nav_book_series -> {
+                            supportFragmentManager
+                                .beginTransaction()
+                                .replace(R.id.frame_container, BookSeriesFragment())
+                                .commit()
+                            drawerLayout.closeDrawer(GravityCompat.START)
+                            return true
+                        }
+                        R.id.nav_all_books -> {
+                            supportFragmentManager
+                                .beginTransaction()
+                                .replace(R.id.frame_container, AllBooksFragment())
+                                .commit()
+                            drawerLayout.closeDrawer(GravityCompat.START)
+                            return true
+                        }
+                        R.id.nav_about_us -> {
+                            val messages =
+                                "My Bookstore is Designed and Developed by Panha.\n\nApp Version : 1.0\n\nContact Us : panha@mail.com"
+                            val builder = AlertDialog.Builder(this@MainActivity)
+                            builder.setTitle(getString(R.string.app_name))
+                                .setMessage(messages)
+                                .setNeutralButton("Dismiss") { dialog, _ ->
+                                    dialog.dismiss()
+                                }
+                                .setIcon(R.drawable.ic_logo)
+                                .create()
+                                .show()
+                            return true
+                        }
+                        R.id.nav_settings -> {
+                            supportFragmentManager
+                                .beginTransaction()
+                                .replace(R.id.frame_container, SettingsFragment())
+                                .commit()
+                            drawerLayout.closeDrawer(GravityCompat.START)
+                            return true
+                        }
+                        else -> {
+                            drawerLayout.closeDrawer(GravityCompat.START)
+                            return true
+                        }
+                    }
+                }
+            }
+        )
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.open,
+            R.string.close
+        )
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
 
 
         // add Home fragment when entering activity
-        if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
-            navigationView.setCheckedItem(R.id.nav_home);
+        if (savedInstanceState == null) {
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.frame_container, HomeFragment())
+                .commit()
+            navigationView.setCheckedItem(R.id.nav_home)
         }
 
         // Back button functionality
-        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                int itemId = -1;
-                if(navigationView.getCheckedItem() != null){
-                    itemId = navigationView.getCheckedItem().getItemId();
+        onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                var itemId = -1
+                if (navigationView.checkedItem != null) {
+                    itemId = navigationView.checkedItem!!.itemId
                 }
 
-                if(drawerLayout.isDrawerOpen(GravityCompat.START)){
-                    drawerLayout.closeDrawer(GravityCompat.START);
-                } else if(itemId == R.id.nav_cart || itemId == R.id.nav_all_books || itemId == R.id.nav_book_series || itemId == R.id.nav_settings){
-                    getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
-                    navigationView.setCheckedItem(R.id.nav_home);
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                } else if (itemId == R.id.nav_cart || itemId == R.id.nav_all_books || itemId == R.id.nav_book_series || itemId == R.id.nav_settings) {
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.frame_container, HomeFragment())
+                        .commit()
+                    navigationView.setCheckedItem(R.id.nav_home)
                 } else if (itemId == R.id.nav_about_us) {
-                    Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.frame_container);
-                    if(currentFragment instanceof HomeFragment){
-                        finish();
+                    val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_container)
+                    if (currentFragment is HomeFragment) {
+                        finish()
                     } else {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
-                        navigationView.setCheckedItem(R.id.nav_home);
+                        supportFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.frame_container, HomeFragment())
+                            .commit()
+                        navigationView.setCheckedItem(R.id.nav_home)
                     }
                 } else {
-                    finish();
+                    finish()
                 }
             }
-        });
+        })
 
         // Nav Header Views
-        navHeader = (RelativeLayout) navigationView.getHeaderView(0);
-        btnLogin = (Button) navHeader.getChildAt(0);
-        userProfile = (RelativeLayout) navHeader.getChildAt(1);
-        imgProfile = (ImageView) userProfile.getChildAt(0);
-        txtName = (TextView) userProfile.getChildAt(2);
-        txtEmail = (TextView) userProfile.getChildAt(3);
-        btnLogout = (Button) userProfile.getChildAt(4);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-
-            }
-        });
-        btnLogout.setOnClickListener(v -> {
-            for (User user :
-                    Utils.INSTANCE.getUsers()) {
-                if(user.isLoginStatus()){
-                    user.setLoginStatus(User.LOGGED_OUT);
+        navHeader = navigationView.getHeaderView(0) as RelativeLayout
+        btnLogin = navHeader.getChildAt(0) as Button
+        userProfile = navHeader.getChildAt(1) as RelativeLayout
+        imgProfile = userProfile.getChildAt(0) as ImageView
+        txtName = userProfile.getChildAt(2) as TextView
+        txtEmail = userProfile.getChildAt(3) as TextView
+        btnLogout = userProfile.getChildAt(4) as Button
+        btnLogin.setOnClickListener {
+            startActivity(
+                Intent(this, LoginActivity::class.java)
+            )
+        }
+        btnLogout.setOnClickListener {
+            for (user in Utils.users) {
+                if (user.isLoginStatus) {
+                    user.isLoginStatus = User.LOGGED_OUT
                 }
             }
-            Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
-            userProfile.setVisibility(View.GONE);
-            btnLogin.setVisibility(View.VISIBLE);
-        });
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.nav_home){
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
-            drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
-        } else if (item.getItemId() == R.id.nav_cart) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new CartFragment()).commit();
-            drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
-        } else if (item.getItemId() == R.id.nav_book_series) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new BookSeriesFragment()).commit();
-            drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
-        } else if(item.getItemId() == R.id.nav_all_books){
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new AllBooksFragment()).commit();
-            drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
-        } else if (item.getItemId() == R.id.nav_about_us) {
-            String messages = "My Bookstore is Designed and Developed by Panha.\n\nApp Version : 1.0\n\nContact Us : panha@mail.com";
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setTitle(getString(R.string.app_name))
-                    .setMessage(messages)
-                    .setNeutralButton("Dismiss", (dialog, which) -> dialog.dismiss())
-                    .setIcon(R.drawable.ic_logo)
-                    .create().show();
-            return true;
-        } else if (item.getItemId() == R.id.nav_settings) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new SettingsFragment()).commit();
-            drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
+            Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show()
+            userProfile.visibility = View.GONE
+            btnLogin.visibility = View.VISIBLE
         }
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        for (User user :
-                Utils.INSTANCE.getUsers()) {
-            if(user.isLoginStatus()){
-                imgProfile.setImageResource(user.getImageId());
-                txtName.setText(user.getUsername());
-                txtEmail.setText(user.getEmail());
-                userProfile.setVisibility(View.VISIBLE);
-
-                btnLogin.setVisibility(View.GONE);
-
+    override fun onResume() {
+        super.onResume()
+        for (user in Utils.users) {
+            if (user.isLoginStatus) {
+                imgProfile.setImageResource(user.imageId)
+                txtName.text = user.username
+                txtEmail.text = user.email
+                userProfile.visibility = View.VISIBLE
+                btnLogin.visibility = View.GONE
             }
         }
     }
