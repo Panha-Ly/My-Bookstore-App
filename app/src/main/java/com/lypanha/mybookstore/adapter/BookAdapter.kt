@@ -1,156 +1,140 @@
-package com.lypanha.mybookstore.adapter;
+package com.lypanha.mybookstore.adapter
 
-import static com.lypanha.mybookstore.model.Item.BOOK;
+import android.content.Context
+import android.content.Intent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
+import com.lypanha.mybookstore.BookActivity
+import com.lypanha.mybookstore.R
+import com.lypanha.mybookstore.model.Book
+import com.lypanha.mybookstore.model.BookSeries
+import com.lypanha.mybookstore.model.Item
 
-import android.content.Context;
-import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+class BookAdapter(
+    private val items: ArrayList<Item>,
+    private val context: Context,
+    private val orientation: Int,
+    private val fragmentName: String
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    class HorizontalBookViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val parent: ConstraintLayout = itemView.findViewById(R.id.parent)
+        private val bookImage: ImageView = itemView.findViewById(R.id.imgBook)
+        private val bookName: TextView = itemView.findViewById(R.id.txtBookName)
 
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.lypanha.mybookstore.BookActivity;
-import com.lypanha.mybookstore.R;
-import com.lypanha.mybookstore.model.Book;
-import com.lypanha.mybookstore.model.BookSeries;
-import com.lypanha.mybookstore.model.Item;
-
-import java.util.ArrayList;
-
-public class BookAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    public static final String HOME = "Home";
-    public static final String ALL_BOOKS = "All Books";
-    public static final String BOOK_SERIES = "Book Series";
-    public static final String CART = "Cart";
-
-    public static final int HORIZONTAL_VIEW = 0;
-    public static final int VERTICAL_VIEW = 1;
-
-    private final ArrayList<Item> items;
-    private final Context context;
-    private final int orientation;
-    private final String fragmentName;
-
-    public BookAdapter(ArrayList<Item> items, Context context, int orientation, String fragmentName) {
-        this.items = items;
-        this.context = context;
-        this.orientation = orientation;
-        this.fragmentName = fragmentName;
-    }
-
-    public static class HorizontalBookViewHolder extends RecyclerView.ViewHolder{
-        private final ConstraintLayout parent;
-        private final ImageView bookImage;
-        private final TextView bookName;
-
-        public HorizontalBookViewHolder(@NonNull View itemView) {
-            super(itemView);
-            parent = itemView.findViewById(R.id.parent);
-            bookImage = itemView.findViewById(R.id.imgBook);
-            bookName = itemView.findViewById(R.id.txtBookName);
+        fun bind(book: Book, onClick: View.OnClickListener) {
+            parent.setOnClickListener(onClick)
+            bookImage.setImageResource(book.imageId)
+            bookName.text = book.name
         }
     }
 
-    public static class VerticalBookViewHolder extends RecyclerView.ViewHolder{
-        private final ConstraintLayout parent;
-        private final ImageView bookImage;
-        private final TextView bookName, bookDescription;
-        public VerticalBookViewHolder(@NonNull View itemView) {
-            super(itemView);
-            parent = itemView.findViewById(R.id.parent);
-            bookImage = itemView.findViewById(R.id.imgBook);
-            bookName = itemView.findViewById(R.id.txtBookName);
-            bookDescription = itemView.findViewById(R.id.txtBookDescription);
+    class VerticalBookViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val parent: ConstraintLayout = itemView.findViewById(R.id.parent)
+        private val bookImage: ImageView = itemView.findViewById(R.id.imgBook)
+        private val bookName: TextView = itemView.findViewById(R.id.txtBookName)
+        private val bookDescription: TextView = itemView.findViewById(R.id.txtBookDescription)
+
+        fun bind(book: Book, onClick: View.OnClickListener) {
+            parent.setOnClickListener(onClick)
+            bookImage.setImageResource(book.imageId)
+            bookDescription.text = book.description
+            bookName.text = book.name
+        }
+
+    }
+
+    class BookSeriesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val bookSeriesName: TextView = itemView.findViewById(R.id.txtBookSeriesName)
+
+        fun bind(bookSeries: BookSeries) {
+            bookSeriesName.text = bookSeries.name
         }
     }
 
-    public static class BookSeriesViewHolder extends RecyclerView.ViewHolder{
-        private final TextView bookSeriesName;
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(context)
 
-        public BookSeriesViewHolder(@NonNull View itemView) {
-            super(itemView);
-            bookSeriesName = itemView.findViewById(R.id.txtBookSeriesName);
-        }
-    }
-
-    @NonNull
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(context);
         // type1 for horizontal view, type2 for vertical view and type3 for vertical view with dynamic view type
-
-        if(orientation == HORIZONTAL_VIEW){
-            return new HorizontalBookViewHolder(inflater.inflate(R.layout.item_book_row_type1, parent, false));
+        if (orientation == HORIZONTAL_VIEW) {
+            return HorizontalBookViewHolder(
+                inflater.inflate(
+                    R.layout.item_book_row_type1,
+                    parent,
+                    false
+                )
+            )
         } else {
-            if(viewType == BOOK){
-                return new VerticalBookViewHolder(inflater.inflate(R.layout.item_book_row_type2, parent, false));
+            if (viewType == Item.BOOK) {
+                return VerticalBookViewHolder(
+                    inflater.inflate(
+                        R.layout.item_book_row_type2,
+                        parent,
+                        false
+                    )
+                )
             } else {
-                return new BookSeriesViewHolder(inflater.inflate(R.layout.item_book_row_type3, parent, false));
+                return BookSeriesViewHolder(
+                    inflater.inflate(
+                        R.layout.item_book_row_type3,
+                        parent,
+                        false
+                    )
+                )
             }
         }
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (orientation == HORIZONTAL_VIEW) {
+            val bookViewHolder = holder as HorizontalBookViewHolder
+            val book = items[position].item as Book
 
-        if(orientation == HORIZONTAL_VIEW){
-            HorizontalBookViewHolder bookViewHolder = (HorizontalBookViewHolder) holder;
-            Book book = (Book) items.get(position).getItem();
-
-            bookViewHolder.bookImage.setImageResource(book.getImageId());
-            bookViewHolder.bookName.setText(book.getName());
-            bookViewHolder.parent.setOnClickListener(v -> {
-
-                Intent intent = new Intent(context, BookActivity.class);
-                intent.putExtra("bookId", book.getId());
-                intent.putExtra("fragmentName", fragmentName);
-                context.startActivity(intent);
-            });
-
+            bookViewHolder.bind(book){ _: View? ->
+                val intent = Intent(context, BookActivity::class.java)
+                intent.putExtra("bookId", book.id)
+                intent.putExtra("fragmentName", fragmentName)
+                context.startActivity(intent)
+            }
 
         } else if (orientation == VERTICAL_VIEW) {
-            if(getItemViewType(position) == BOOK){
-                VerticalBookViewHolder bookViewHolder = (VerticalBookViewHolder) holder;
-                Book book = (Book) items.get(position).getItem();
+            if (getItemViewType(position) == Item.BOOK) {
+                val bookViewHolder = holder as VerticalBookViewHolder
+                val book = items[position].item as Book
 
-                bookViewHolder.bookImage.setImageResource(book.getImageId());
-                bookViewHolder.bookName.setText(book.getName());
-                bookViewHolder.bookDescription.setText(book.getDescription());
-                bookViewHolder.parent.setOnClickListener(v -> {
+                bookViewHolder.bind(book){ _: View? ->
+                    val intent = Intent(context, BookActivity::class.java)
+                    intent.putExtra("bookId", book.id)
+                    intent.putExtra("fragmentName", fragmentName)
+                    context.startActivity(intent)
+                }
 
-                    Intent intent = new Intent(context, BookActivity.class);
-                    intent.putExtra("bookId", book.getId());
-                    intent.putExtra("fragmentName", fragmentName);
-                    context.startActivity(intent);
-                });
             } else {
-                BookSeriesViewHolder bookViewHolder = (BookSeriesViewHolder) holder;
-                BookSeries bookSeries = (BookSeries) items.get(position).getItem();
+                val bookViewHolder = holder as BookSeriesViewHolder
+                val bookSeries = items[position].item as BookSeries
 
-                bookViewHolder.bookSeriesName.setText(bookSeries.getName());
-                bookViewHolder.bookSeriesName.setText(bookSeries.getName());
-
+                bookViewHolder.bind(bookSeries)
             }
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return items.size();
+    override fun getItemCount(): Int = items.size
+
+    override fun getItemViewType(position: Int): Int {
+        return if (items[position].itemTypeId == Item.BOOK) { 0 } else { 1 }
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        Item item = items.get(position);
-        if(item.getItemTypeId() == BOOK){
-            return 0;
-        } else {
-            return 1;
-        }
+    companion object {
+        const val HOME: String = "Home"
+        const val ALL_BOOKS: String = "All Books"
+        const val BOOK_SERIES: String = "Book Series"
+        const val CART: String = "Cart"
+
+        const val HORIZONTAL_VIEW: Int = 0
+        const val VERTICAL_VIEW: Int = 1
     }
 }
