@@ -1,71 +1,59 @@
-package com.lypanha.mybookstore;
+package com.lypanha.mybookstore
 
-import android.os.Bundle;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.lypanha.mybookstore.adapter.BookAdapter
+import com.lypanha.mybookstore.model.Item
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class CartFragment : Fragment() {
+    private lateinit var adapter: BookAdapter
+    private lateinit var items: ArrayList<Item>
+    private lateinit var txtNoBooksInCart: TextView
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.lypanha.mybookstore.adapter.BookAdapter;
-import com.lypanha.mybookstore.model.Book;
-import com.lypanha.mybookstore.model.Item;
-
-import java.util.ArrayList;
-
-public class CartFragment extends Fragment {
-    private RecyclerView cartRecView;
-    private BookAdapter adapter;
-    private ArrayList<Item> items;
-    private TextView noBooksInCart;
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_cart, container, false);
+        return inflater.inflate(R.layout.fragment_cart, container, false)
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        noBooksInCart = view.findViewById(R.id.noBooksInCart);
-        items = new ArrayList<>();
-        for (Book book :
-                Utils.INSTANCE.getBooksInCart()) {
-            items.add(new Item(Item.BOOK,book));
+        txtNoBooksInCart = view.findViewById(R.id.noBooksInCart)
+        items = arrayListOf<Item>().apply {
+            addAll(Utils.booksInCart.map { Item(Item.BOOK, it) })
         }
-        if (items.isEmpty()) {
-            noBooksInCart.setVisibility(View.VISIBLE);
-        }
+        if (items.isEmpty()) txtNoBooksInCart.visibility = View.VISIBLE
 
-
-        cartRecView = (RecyclerView) view.findViewById(R.id.cartRecView);
-        adapter = new BookAdapter(items, requireContext(), BookAdapter.VERTICAL_VIEW, BookAdapter.CART);
-        cartRecView.setAdapter(adapter);
-        cartRecView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
+        val cartRecView = view.findViewById<RecyclerView>(R.id.cartRecView)
+        adapter = BookAdapter(items, requireContext(), BookAdapter.VERTICAL_VIEW, BookAdapter.CART)
+        cartRecView.setAdapter(adapter)
+        cartRecView.setLayoutManager(
+            LinearLayoutManager(
+                this.requireContext(),
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+        )
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        items.clear();
-        for (Book book : Utils.INSTANCE.getBooksInCart()) {
-            items.add(new Item(Item.BOOK,book));
+    override fun onResume() {
+        super.onResume()
+        with(items){
+            clear()
+            addAll(Utils.booksInCart.map { Item(Item.BOOK, it) })
         }
-        if (items.isEmpty()) {
-            noBooksInCart.setVisibility(View.VISIBLE);
-        }
-        cartRecView.getAdapter().notifyDataSetChanged();
-
+        if (items.isEmpty()) txtNoBooksInCart.visibility = View.VISIBLE
+        adapter.notifyDataSetChanged()
     }
 }
