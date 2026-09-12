@@ -1,53 +1,50 @@
-package com.lypanha.mybookstore;
+package com.lypanha.mybookstore
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.lypanha.mybookstore.adapter.BookAdapter
+import com.lypanha.mybookstore.model.Item
+import java.util.Collections
 
-import android.os.Bundle;
+class AllBooksFragment : Fragment() {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.lypanha.mybookstore.adapter.BookAdapter;
-import com.lypanha.mybookstore.model.Book;
-import com.lypanha.mybookstore.model.Item;
-
-import java.util.ArrayList;
-import java.util.Collections;
-
-public class AllBooksFragment extends Fragment {
-    private RecyclerView allBooksRecView;
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_all_books, container, false);
+        return inflater.inflate(R.layout.fragment_all_books, container, false)
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-
-        ArrayList<Item> items = new ArrayList<>();
         // Add all books to the list
-        for (Book book :
-                Utils.INSTANCE.getAllBooks()) {
-            items.add(new Item(Item.BOOK, book));
+        val items: ArrayList<Item> = Utils.allBooks
+            .map { Item(Item.BOOK, it) }
+            .toCollection(arrayListOf())
 
-        }
         // Shuffle the books in the list
-        Collections.shuffle(items);
+//        Collections.shuffle(items)
+        items.shuffle()
 
-        allBooksRecView = view.findViewById(R.id.allBooksRecView);
-        allBooksRecView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        allBooksRecView.setAdapter(new BookAdapter(items,requireContext(),BookAdapter.VERTICAL_VIEW, BookAdapter.ALL_BOOKS));
+        val allBooksRecView = view.findViewById<RecyclerView>(R.id.allBooksRecView)
+        allBooksRecView.layoutManager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+        allBooksRecView.adapter = BookAdapter(
+            items,
+            requireContext(),
+            BookAdapter.VERTICAL_VIEW,
+            BookAdapter.ALL_BOOKS
+        )
     }
 }
