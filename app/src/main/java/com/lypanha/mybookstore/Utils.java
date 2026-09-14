@@ -7,10 +7,9 @@ import static com.lypanha.mybookstore.model.BookSeries.LORD_OF_THE_RINGS_SERIES;
 import static com.lypanha.mybookstore.model.BookSeries.MAZE_RUNNER_SERIES;
 import static com.lypanha.mybookstore.model.BookSeries.READY_PLAYER_ONE_SERIES;
 
-
 import com.lypanha.mybookstore.model.Book;
 import com.lypanha.mybookstore.model.BookSeries;
-import com.lypanha.mybookstore.model.Item;
+import com.lypanha.mybookstore.adapter.BookAdapterItem;
 import com.lypanha.mybookstore.model.User;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ public class Utils {
 
     private ArrayList<Book> allBooks; // books list
     private ArrayList<BookSeries> allBookSeriesNames; // series names list
-    private ArrayList<Item> allBooksBySeries; // books with series names list
+    private ArrayList<BookAdapterItem> allBooksBySeries; // books with series names list
     private ArrayList<Book> booksInCart; // books in cart list
 
     private ArrayList<User> users;
@@ -43,7 +42,7 @@ public class Utils {
         return allBooks;
     }
 
-    public ArrayList<Item> getAllBooksBySeries() {
+    public ArrayList<BookAdapterItem> getAllBooksBySeries() {
         return allBooksBySeries;
     }
     public ArrayList<Book> getBooksInCart() {
@@ -55,20 +54,11 @@ public class Utils {
     }
 
     public Book getBookById(int bookId) {
-        for (Book book :
-                allBooks) {
+        for (Book book : allBooks) {
             if(book.getId() == bookId) return book;
         }
         return null;
     }
-    public BookSeries getBookSeriesById(String bookSeriesId){
-        for (BookSeries bookSeries :
-                allBookSeriesNames) {
-            if(bookSeries.getSeriesId().equals(bookSeriesId)) return bookSeries;
-        }
-        return null;
-    }
-
 
     private void initData() {
         allBooks = new ArrayList<>();
@@ -77,9 +67,8 @@ public class Utils {
         booksInCart = new ArrayList<>();
         users = new ArrayList<>();
 
-        users.add(new User(1,R.drawable.pfp_bmo,"Panha Ly","panha@gmail.com", "123456789", User.LOGGED_OUT));
-        users.add(new User(1,R.drawable.pfp_admin,"Administrator","admin", "12345", User.LOGGED_OUT));
-
+        users.add(new User(1,R.drawable.pfp_bmo,"Panha","panha@gmail.com", "123456789", User.LOGGED_OUT));
+        users.add(new User(2,R.drawable.pfp_admin,"Administrator","admin", "12345", User.LOGGED_OUT));
 
         // Dune Books
         allBooks.add(new Book(1,DUNE_SERIES,"Dune","Frank Herbert","1965",
@@ -187,11 +176,11 @@ public class Utils {
         // All books by series in alphabetical order list
         for (BookSeries series :
                 allBookSeriesNames) {
-            allBooksBySeries.add(new Item(Item.BOOK_SERIES,series));
+            allBooksBySeries.add(new BookAdapterItem.Header(series));
             for (Book book :
                     allBooks) {
                 if (book.getSeriesId().equals(series.getSeriesId())) {
-                    allBooksBySeries.add(new Item(Item.BOOK, book));
+                    allBooksBySeries.add(new BookAdapterItem.Content(book));
                 }
             }
         }
@@ -199,31 +188,20 @@ public class Utils {
     }
 
     public boolean removeFromCart(int bookId) {
-        for (Book book :
-                booksInCart) {
-            if (book.getId() == bookId) {
-                return booksInCart.remove(book);
-            }
+        for (Book book : booksInCart) {
+            if (book.getId() == bookId) return booksInCart.remove(book);
         }
         return false;
     }
     public boolean addToCart(int bookId) {
-        for (Book book :
-                booksInCart) {
-            if (book.getId() == bookId) {
-                return false;
-            }
+        for (Book book : booksInCart) {
+            if (book.getId() == bookId) return false;
         }
-        for (Book book :
-                allBooks) {
-            if (book.getId() == bookId) {
-                booksInCart.add(book);
-                return true;
-            }
+        for (Book book : allBooks) {
+            if (book.getId() == bookId) return booksInCart.add(book);
         }
         return false;
     }
-
 
 }
 

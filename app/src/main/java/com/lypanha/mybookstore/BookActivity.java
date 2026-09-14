@@ -24,7 +24,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
-import com.lypanha.mybookstore.adapter.BookAdapter;
 import com.lypanha.mybookstore.model.Book;
 
 public class BookActivity extends AppCompatActivity {
@@ -85,7 +84,7 @@ public class BookActivity extends AppCompatActivity {
                     txtPublicationDate.setText(currentBook.getPublicationDate());
                 }
                 if (fragmentName != null) {
-                    if (fragmentName.equals(BookAdapter.CART)) {
+                    if (fragmentName.equals("Cart")) {
                         btnCart.setText(getText(R.string.remove_from_cart));
                         btnCart.setOnClickListener(v -> {
                             if(Utils.getInstance().removeFromCart(bookId)){
