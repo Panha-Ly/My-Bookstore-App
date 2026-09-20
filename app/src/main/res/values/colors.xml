@@ -3,5 +3,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="accentColor">#F25C54</color>
+    <color name="accentColorLight">#F08680</color>
 
 </resources>

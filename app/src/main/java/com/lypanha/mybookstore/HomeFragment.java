@@ -5,12 +5,12 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.lypanha.mybookstore.adapter.BookSmallAdapter;
+import com.lypanha.mybookstore.databinding.FragmentHomeBinding;
 import com.lypanha.mybookstore.model.Book;
 import java.util.ArrayList;
 import java.util.Set;
@@ -18,15 +18,16 @@ import java.util.stream.Collectors;
 
 public class HomeFragment extends Fragment {
 
+    private FragmentHomeBinding binding;
+
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater,
             ViewGroup container,
             Bundle savedInstanceState
     ) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
-
+        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -46,7 +47,6 @@ public class HomeFragment extends Fragment {
                 .collect(Collectors.toCollection(ArrayList::new));
 
 //         Popular books recycler view
-        RecyclerView popularBooksRecView = view.findViewById(R.id.popularBooksRecView);
         BookSmallAdapter popularAdapter = new BookSmallAdapter(popItems, book -> {
             // All navigation logic stays at the top-level where it belongs!
             Intent intent = new Intent(requireContext(), BookActivity.class);
@@ -54,19 +54,22 @@ public class HomeFragment extends Fragment {
             intent.putExtra("fragmentName", "Home");
             startActivity(intent);
         });
-        popularBooksRecView.setAdapter(popularAdapter);
-        popularBooksRecView.setLayoutManager(new LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false));
+        binding.popularBooksRecView.setAdapter(popularAdapter);
 
         // New release books recycler view
-        RecyclerView newReleaseBooksRecView = view.findViewById(R.id.newReleaseBooksRecView);
         BookSmallAdapter newReleaseAdapter = new BookSmallAdapter(newItems, book -> {
             Intent intent = new Intent(requireContext(), BookActivity.class);
             intent.putExtra("bookId", book.getId());
             intent.putExtra("fragmentName", "Home");
             startActivity(intent);
         });
-        newReleaseBooksRecView.setAdapter(newReleaseAdapter);
-        newReleaseBooksRecView.setLayoutManager(new LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false));
+        binding.newReleaseBooksRecView.setAdapter(newReleaseAdapter);
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }
