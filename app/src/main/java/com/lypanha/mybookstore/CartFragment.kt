@@ -1,5 +1,6 @@
 package com.lypanha.mybookstore
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +9,11 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.lypanha.mybookstore.adapter.BookAdapter
-import com.lypanha.mybookstore.model.Item
+import com.lypanha.mybookstore.adapter.BookAdapterItem
+import com.lypanha.mybookstore.adapter.BookLargeAdapter
 
 class CartFragment : Fragment() {
-    private lateinit var adapter: BookAdapter
-    private lateinit var items: ArrayList<Item>
+    private lateinit var adapter: BookLargeAdapter
     private lateinit var txtNoBooksInCart: TextView
 
     override fun onCreateView(
@@ -29,14 +29,19 @@ class CartFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         txtNoBooksInCart = view.findViewById(R.id.noBooksInCart)
-        items = arrayListOf<Item>().apply {
-            addAll(Utils.booksInCart.map { Item(Item.BOOK, it) })
-        }
-        if (items.isEmpty()) txtNoBooksInCart.visibility = View.VISIBLE
+        val items: List<BookAdapterItem> = Utils.booksInCart
+            .map { BookAdapterItem.Content(it) }
+            .apply { txtNoBooksInCart.visibility = if (isEmpty()) View.VISIBLE else View.GONE }
 
         val cartRecView = view.findViewById<RecyclerView>(R.id.cartRecView)
-        adapter = BookAdapter(items, requireContext(), BookAdapter.VERTICAL_VIEW, BookAdapter.CART)
-        cartRecView.setAdapter(adapter)
+        adapter = BookLargeAdapter { book ->
+            val intent = Intent(requireContext(), BookActivity::class.java).apply {
+                putExtra("bookId", book.id)
+                putExtra("fragmentName", "Cart")
+            }
+            requireContext().startActivity(intent)
+        }.apply { submitList(items) }
+        cartRecView.adapter = this.adapter
         cartRecView.setLayoutManager(
             LinearLayoutManager(
                 this.requireContext(),
@@ -49,11 +54,13 @@ class CartFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        with(items){
-            clear()
-            addAll(Utils.booksInCart.map { Item(Item.BOOK, it) })
-        }
-        if (items.isEmpty()) txtNoBooksInCart.visibility = View.VISIBLE
-        adapter.notifyDataSetChanged()
+
+        Utils.booksInCart
+            .map { BookAdapterItem.Content(it) }
+            .apply { txtNoBooksInCart.visibility = if (isEmpty()) View.VISIBLE else View.GONE }
+            .also { freshItems: List<BookAdapterItem> ->
+                adapter.submitList(freshItems)
+            }
+
     }
 }

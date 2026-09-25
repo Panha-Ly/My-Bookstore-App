@@ -1,5 +1,6 @@
 package com.lypanha.mybookstore
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,8 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.lypanha.mybookstore.adapter.BookAdapter
-import com.lypanha.mybookstore.model.Item
+import com.lypanha.mybookstore.adapter.BookSmallAdapter
+import com.lypanha.mybookstore.model.Book
 
 class HomeFragment : Fragment() {
 
@@ -25,25 +26,27 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // test data
-        val popItems = arrayListOf<Item>()
-        val popIds = listOf(21,19,1,13)
-        popItems.addAll(
-            Utils.allBooks
-                .filter { book -> popIds.any { book.id == it } }
-                .map { Item(Item.BOOK, it) }
-        )
+        val popIds = setOf(21, 19, 1, 13)
+        val popItems: List<Book> = Utils.allBooks.filter { book -> popIds.any { book.id == it } }
 
-        val newItems = ArrayList<Item>()
-        for (book in Utils.allBooks) {
-            if (book.id == 20 || book.id == 24 || book.id == 18) {
-                newItems.add(Item(Item.BOOK, book))
+        val newItems: List<Book> = mutableListOf<Book>().apply {
+            for (book in Utils.allBooks) {
+                if (book.id == 20 || book.id == 24 || book.id == 18) {
+                    add(book)
+                }
             }
-        }
+        }.toList()
 
         // Popular books recycler view
         val popularBooksRecView = view.findViewById<RecyclerView>(R.id.popularBooksRecView)
-        val popBooksAdapter = BookAdapter(popItems, requireContext(), BookAdapter.HORIZONTAL_VIEW, BookAdapter.HOME)
-        popularBooksRecView.setAdapter(popBooksAdapter)
+        val popBooksAdapter = BookSmallAdapter { book ->
+            val intent = Intent(requireContext(), BookActivity::class.java).apply {
+                putExtra("bookId", book.id)
+                putExtra("fragmentName", "Home")
+            }
+            requireContext().startActivity(intent)
+        }.apply { submitList(popItems) }
+        popularBooksRecView.adapter = popBooksAdapter
         popularBooksRecView.setLayoutManager(
             LinearLayoutManager(
                 requireContext(),
@@ -54,14 +57,13 @@ class HomeFragment : Fragment() {
 
         // New release books recycler view
         val newReleaseBooksRecView = view.findViewById<RecyclerView>(R.id.newReleaseBooksRecView)
-        newReleaseBooksRecView.setAdapter(
-            BookAdapter(
-                newItems,
-                requireContext(),
-                BookAdapter.HORIZONTAL_VIEW,
-                BookAdapter.HOME
-            )
-        )
+        newReleaseBooksRecView.adapter = BookSmallAdapter { book ->
+            val intent = Intent(requireContext(), BookActivity::class.java).apply {
+                putExtra("bookId", book.id)
+                putExtra("fragmentName", "Home")
+            }
+            requireContext().startActivity(intent)
+        }.apply { submitList(newItems) }
         newReleaseBooksRecView.setLayoutManager(
             LinearLayoutManager(
                 requireContext(),

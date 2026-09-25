@@ -1,5 +1,6 @@
 package com.lypanha.mybookstore
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,8 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.lypanha.mybookstore.adapter.BookAdapter
-import com.lypanha.mybookstore.model.Item
+import com.lypanha.mybookstore.adapter.BookAdapterItem
+import com.lypanha.mybookstore.adapter.BookLargeAdapter
 
 class BookSeriesFragment : Fragment() {
 
@@ -24,17 +25,16 @@ class BookSeriesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val items = ArrayList<Item>(Utils.allBooksBySeries)
+        val items: List<BookAdapterItem> = Utils.allBooksBySeries
 
         val bookSeriesRecView = view.findViewById<RecyclerView>(R.id.bookSeriesRecView)
-        bookSeriesRecView.setAdapter(
-            BookAdapter(
-                items,
-                requireContext(),
-                BookAdapter.VERTICAL_VIEW,
-                BookAdapter.BOOK_SERIES
-            )
-        )
+        bookSeriesRecView.adapter = BookLargeAdapter { book ->
+            val intent = Intent(requireContext(), BookActivity::class.java).apply {
+                putExtra("bookId", book.id)
+                putExtra("fragmentName", "Book Series")
+            }
+            requireContext().startActivity(intent)
+        }.apply { submitList(items) }
         bookSeriesRecView.setLayoutManager(
             LinearLayoutManager(
                 requireContext(),

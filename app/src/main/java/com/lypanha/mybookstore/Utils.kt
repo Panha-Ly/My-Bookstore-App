@@ -1,8 +1,8 @@
 package com.lypanha.mybookstore
 
+import com.lypanha.mybookstore.adapter.BookAdapterItem
 import com.lypanha.mybookstore.model.Book
 import com.lypanha.mybookstore.model.BookSeries
-import com.lypanha.mybookstore.model.Item
 import com.lypanha.mybookstore.model.User
 
 object Utils {
@@ -11,63 +11,63 @@ object Utils {
     val allBooks: List<Book> = listOf(
         // Dune Books
         Book(
-            1, 
-            BookSeries.DUNE_SERIES, 
-            "Dune", 
-            "Frank Herbert", 
+            1,
+            BookSeries.DUNE_SERIES,
+            "Dune",
+            "Frank Herbert",
             "1965",
             "Dune is set on the desert planet Arrakis approximately 20,000 years in the future. The year is 10,191, and human beings have colonized planets throughout the universe. The story follows Paul Atreides, the heir to a noble family tasked with ruling Arrakis—a harsh world where the valuable spice called melange is the only resource of significance.",
-            "5.99", 
+            "5.99",
             R.drawable.img_dune_1
         ),
         Book(
-            2, 
-            BookSeries.DUNE_SERIES, 
-            "Dune Messiah", 
-            "Frank Herbert", 
+            2,
+            BookSeries.DUNE_SERIES,
+            "Dune Messiah",
+            "Frank Herbert",
             "1969",
             "Twelve years after the events described in Dune, Paul Atreides rules as Emperor of the Known Universe, following Muad'dib's Jihad which he unleashed by accepting the role of Mahdi to the Fremen. While Paul is the most powerful Emperor ever, he is ironically powerless to stop the lethal religious excesses of the juggernaut he has created.",
-            "5.99", 
+            "5.99",
             R.drawable.img_dune_2
         ),
         Book(
-            3, 
-            BookSeries.DUNE_SERIES, 
-            "Children of Dune", 
-            "Frank Herbert", 
+            3,
+            BookSeries.DUNE_SERIES,
+            "Children of Dune",
+            "Frank Herbert",
             "April 1976",
             "At the end of Dune Messiah, Paul Atreides walks into the desert, a blind man, leaving his twin children Leto and Ghanima in the care of the Fremen, while his sister Alia rules the universe as regent. Awakened in the womb by the spice, the children are the heirs to Paul's prescient vision of the fate of the universe, a role that Alia desperately craves. House Corrino schemes to return to the throne, while the Bene Gesserit make common cause with the Tleilaxu and Spacing Guild to gain control of the spice and the children of Paul Atreides.",
-            "5.99", 
+            "5.99",
             R.drawable.img_dune_3
         ),
         Book(
-            4, 
-            BookSeries.DUNE_SERIES, 
-            "God Emperor of Dune", 
-            "Frank Herbert", 
+            4,
+            BookSeries.DUNE_SERIES,
+            "God Emperor of Dune",
+            "Frank Herbert",
             "1981",
             "3,500 years have passed since Paul Atreides became the messiah of the Fremen and the Emperor of the universe. His son, Leto II, sees the path his father Muad'dib saw, a future that avoided the extinction of human life. That future, however, required the ultimate and monstrous act of selflessness of becoming a metamorphic vector between primate and worm.",
-            "5.99", 
+            "5.99",
             R.drawable.img_dune_4
         ),
         Book(
-            5, 
-            BookSeries.DUNE_SERIES, 
-            "Heretics of Dune", 
-            "Frank Herbert", 
+            5,
+            BookSeries.DUNE_SERIES,
+            "Heretics of Dune",
+            "Frank Herbert",
             "1984",
             "Set 1,500 years after the events of God Emperor of Dune (1981), the novel finds humanity on the path set for them by the tyrant Leto II Atreides to guarantee their survival. But a new threat arrives in the form of the Honored Matres, a brutal matriarchy from beyond the known universe whose only goals are conquest and destruction.",
-            "5.99", 
+            "5.99",
             R.drawable.img_dune_5
         ),
         Book(
-            6, 
-            BookSeries.DUNE_SERIES, 
-            "Chapterhouse: Dune", 
-            "Frank Herbert", 
+            6,
+            BookSeries.DUNE_SERIES,
+            "Chapterhouse: Dune",
+            "Frank Herbert",
             "April 1985",
             "A direct follow-up to Heretics of Dune, the novel chronicles the continued struggles of the Bene Gesserit sisterhood against the violent Honored Matres, who are succeeding in their bid to seize control of the universe and destroy the factions and planets that oppose them.",
-            "5.99", 
+            "5.99",
             R.drawable.img_dune_6
         ),
         // Harry Potter Books
@@ -285,7 +285,7 @@ object Utils {
             "5.99",
             R.drawable.img_lotr_3
         )
-        
+
     )
 
     // series names list
@@ -317,14 +317,14 @@ object Utils {
     )
 
     // books with series names list
-    val allBooksBySeries: List<Item> = allBookSeriesNames.flatMap { series ->
+    val allBooksBySeries: List<BookAdapterItem> = allBookSeriesNames.flatMap { series ->
         // 1. Create a list starting with the series header
-        val seriesHeader = listOf(Item(Item.BOOK_SERIES, series))
+        val seriesHeader = listOf(BookAdapterItem.Header(series))
 
         // 2. Filter the books that belong to this specific series
         val matchingBooks = allBooks
             .filter { book -> book.seriesId == series.seriesId }
-            .map { book -> Item(Item.BOOK, book) }
+            .map { book -> BookAdapterItem.Content(book) }
 
         // 3. Combine the header and the books for this series
         seriesHeader + matchingBooks
@@ -337,13 +337,13 @@ object Utils {
         User(
             1,
             R.drawable.pfp_bmo,
-            "Panha Ly",
+            "Panha",
             "panha@gmail.com",
             "123456789",
             User.LOGGED_OUT
         ),
         User(
-            1,
+            2,
             R.drawable.pfp_admin,
             "Administrator",
             "admin",
@@ -353,42 +353,14 @@ object Utils {
     )
 
 
-    fun getBookById(bookId: Int): Book? {
-        for (book in allBooks) {
-            if (book.id == bookId) return book
-        }
-        return null
-    }
+    fun getBookById(bookId: Int): Book? = allBooks.find { book -> book.id == bookId }
 
-    fun getBookSeriesById(bookSeriesId: String?): BookSeries? {
-        for (bookSeries in allBookSeriesNames) {
-            if (bookSeries.seriesId == bookSeriesId) return bookSeries
-        }
-        return null
-    }
-
-    fun removeFromCart(bookId: Int): Boolean {
-        for (book in booksInCart) {
-            if (book.id == bookId) {
-                return booksInCart.remove(book)
-            }
-        }
-        return false
-    }
+    fun removeFromCart(bookId: Int): Boolean = booksInCart.removeIf { book -> book.id == bookId }
 
     fun addToCart(bookId: Int): Boolean {
-        for (book in booksInCart) {
-            if (book.id == bookId) {
-                return false
-            }
-        }
-        for (book in allBooks) {
-            if (book.id == bookId) {
-                booksInCart.add(book)
-                return true
-            }
-        }
-        return false
+        if (booksInCart.any { book -> book.id == bookId }) return false
+        val book = getBookById(bookId) ?: return false
+        return booksInCart.add(book)
     }
 }
 

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
@@ -15,15 +14,11 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
-import com.google.android.material.snackbar.Snackbar
 import com.lypanha.mybookstore.Utils.addToCart
 import com.lypanha.mybookstore.Utils.removeFromCart
-import com.lypanha.mybookstore.adapter.BookAdapter
 
 class BookActivity : AppCompatActivity() {
 
@@ -76,19 +71,14 @@ class BookActivity : AppCompatActivity() {
         // Cart button
         intent.getStringExtra("fragmentName")?.let { name ->
             btnCart.text = resources.getText(
-                if (name == BookAdapter.CART) R.string.remove_from_cart else R.string.add_to_cart
+                if (name == "Cart") R.string.remove_from_cart else R.string.add_to_cart
             )
             btnCart.setOnClickListener {
-                val toastTxt = if (name == BookAdapter.CART) {
+                val toastTxt = if (name == "Cart") {
                     if (removeFromCart(bookId)) "Removed from Cart" else "Already removed from Cart"
                 } else {
                     if (addToCart(bookId)) "Added to Cart" else "Already added to Cart"
                 }
-//                val snackBar = Snackbar.make(findViewById<ConstraintLayout>(R.id.main), toastTxt, Snackbar.LENGTH_SHORT)
-//                snackBar.view.updateLayoutParams<ViewGroup.MarginLayoutParams>{
-//                    bottomMargin += (48 * resources.displayMetrics.density).toInt()
-//                }
-//                snackBar.show()
                 Toast.makeText(this, toastTxt, Toast.LENGTH_SHORT).show()
             }
         }
