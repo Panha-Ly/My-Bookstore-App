@@ -4,49 +4,36 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
+import com.lypanha.mybookstore.databinding.ActivityMainBinding
+import com.lypanha.mybookstore.databinding.NavHeaderBinding
 import com.lypanha.mybookstore.model.User
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var navigationView: NavigationView
+
+    private lateinit var binding: ActivityMainBinding
 
     // Nav Header Views
-    private lateinit var navHeader: RelativeLayout
-    private lateinit var btnLogin: Button
-    private lateinit var userProfile: RelativeLayout
-    private lateinit var imgProfile: ImageView
-    private lateinit var txtName: TextView
-    private lateinit var txtEmail: TextView
-    private lateinit var btnLogout: Button
-
+    private lateinit var navHeaderBinding: NavHeaderBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        navHeaderBinding = NavHeaderBinding.bind(binding.navView.getHeaderView(0))
+        setContentView(binding.root)
 
         // Toolbar
-        val toolbar: Toolbar = findViewById<Toolbar>(R.id.toolbar)
-            .apply { title = "" }
-        setSupportActionBar(toolbar)
-
+        binding.toolbar.title = ""
+        setSupportActionBar(binding.toolbar)
 
         // Navigation drawer
-        drawerLayout = findViewById(R.id.drawer_layout)
-        navigationView = findViewById(R.id.nav_view)
-        navigationView.setNavigationItemSelectedListener(object :
+        binding.navView.setNavigationItemSelectedListener(object :
             NavigationView.OnNavigationItemSelectedListener {
                 override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
                     when (menuItem.itemId) {
@@ -55,7 +42,7 @@ class MainActivity : AppCompatActivity() {
                                 .beginTransaction()
                                 .replace(R.id.frame_container, HomeFragment())
                                 .commit()
-                            drawerLayout.closeDrawer(GravityCompat.START)
+                            binding.drawerLayout.closeDrawer(GravityCompat.START)
                             return true
                         }
                         R.id.nav_cart -> {
@@ -63,7 +50,7 @@ class MainActivity : AppCompatActivity() {
                                 .beginTransaction()
                                 .replace(R.id.frame_container, CartFragment())
                                 .commit()
-                            drawerLayout.closeDrawer(GravityCompat.START)
+                            binding.drawerLayout.closeDrawer(GravityCompat.START)
                             return true
                         }
                         R.id.nav_book_series -> {
@@ -71,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                                 .beginTransaction()
                                 .replace(R.id.frame_container, BookSeriesFragment())
                                 .commit()
-                            drawerLayout.closeDrawer(GravityCompat.START)
+                            binding.drawerLayout.closeDrawer(GravityCompat.START)
                             return true
                         }
                         R.id.nav_all_books -> {
@@ -79,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                                 .beginTransaction()
                                 .replace(R.id.frame_container, AllBooksFragment())
                                 .commit()
-                            drawerLayout.closeDrawer(GravityCompat.START)
+                            binding.drawerLayout.closeDrawer(GravityCompat.START)
                             return true
                         }
                         R.id.nav_about_us -> {
@@ -101,11 +88,11 @@ class MainActivity : AppCompatActivity() {
                                 .beginTransaction()
                                 .replace(R.id.frame_container, SettingsFragment())
                                 .commit()
-                            drawerLayout.closeDrawer(GravityCompat.START)
+                            binding.drawerLayout.closeDrawer(GravityCompat.START)
                             return true
                         }
                         else -> {
-                            drawerLayout.closeDrawer(GravityCompat.START)
+                            binding.drawerLayout.closeDrawer(GravityCompat.START)
                             return true
                         }
                     }
@@ -115,12 +102,12 @@ class MainActivity : AppCompatActivity() {
 
         val toggle = ActionBarDrawerToggle(
             this,
-            drawerLayout,
-            toolbar,
+            binding.drawerLayout,
+            binding.toolbar,
             R.string.open,
             R.string.close
         )
-        drawerLayout.addDrawerListener(toggle)
+        binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
 
@@ -130,25 +117,25 @@ class MainActivity : AppCompatActivity() {
                 .beginTransaction()
                 .replace(R.id.frame_container, HomeFragment())
                 .commit()
-            navigationView.setCheckedItem(R.id.nav_home)
+            binding.navView.setCheckedItem(R.id.nav_home)
         }
 
         // Back button functionality
         onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 var itemId = -1
-                if (navigationView.checkedItem != null) {
-                    itemId = navigationView.checkedItem!!.itemId
+                if (binding.navView.checkedItem != null) {
+                    itemId = binding.navView.checkedItem!!.itemId
                 }
 
-                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    drawerLayout.closeDrawer(GravityCompat.START)
+                if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
                 } else if (itemId == R.id.nav_cart || itemId == R.id.nav_all_books || itemId == R.id.nav_book_series || itemId == R.id.nav_settings) {
                     supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.frame_container, HomeFragment())
                         .commit()
-                    navigationView.setCheckedItem(R.id.nav_home)
+                    binding.navView.setCheckedItem(R.id.nav_home)
                 } else if (itemId == R.id.nav_about_us) {
                     val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_container)
                     if (currentFragment is HomeFragment) {
@@ -158,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                             .beginTransaction()
                             .replace(R.id.frame_container, HomeFragment())
                             .commit()
-                        navigationView.setCheckedItem(R.id.nav_home)
+                        binding.navView.setCheckedItem(R.id.nav_home)
                     }
                 } else {
                     finish()
@@ -167,27 +154,22 @@ class MainActivity : AppCompatActivity() {
         })
 
         // Nav Header Views
-        navHeader = navigationView.getHeaderView(0) as RelativeLayout
-        btnLogin = navHeader.getChildAt(0) as Button
-        userProfile = navHeader.getChildAt(1) as RelativeLayout
-        imgProfile = userProfile.getChildAt(0) as ImageView
-        txtName = userProfile.getChildAt(2) as TextView
-        txtEmail = userProfile.getChildAt(3) as TextView
-        btnLogout = userProfile.getChildAt(4) as Button
-        btnLogin.setOnClickListener {
+        navHeaderBinding.btnLogin.setOnClickListener {
             startActivity(
                 Intent(this, LoginActivity::class.java)
             )
         }
-        btnLogout.setOnClickListener {
+        navHeaderBinding.btnLogout.setOnClickListener {
             for (user in Utils.users) {
                 if (user.isLoginStatus) {
                     user.isLoginStatus = User.LOGGED_OUT
                 }
             }
             Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show()
-            userProfile.visibility = View.GONE
-            btnLogin.visibility = View.VISIBLE
+            with(navHeaderBinding){
+                userProfile.visibility = View.GONE
+                btnLogin.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -195,11 +177,13 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         for (user in Utils.users) {
             if (user.isLoginStatus) {
-                imgProfile.setImageResource(user.imageId)
-                txtName.text = user.username
-                txtEmail.text = user.email
-                userProfile.visibility = View.VISIBLE
-                btnLogin.visibility = View.GONE
+                with(navHeaderBinding){
+                    imgProfile.setImageResource(user.imageId)
+                    txtName.text = user.username
+                    txtEmail.text = user.email
+                    userProfile.visibility = View.VISIBLE
+                    btnLogin.visibility = View.GONE
+                }
             }
         }
     }

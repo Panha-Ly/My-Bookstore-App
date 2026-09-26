@@ -7,19 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.lypanha.mybookstore.adapter.BookSmallAdapter
+import com.lypanha.mybookstore.databinding.FragmentHomeBinding
 import com.lypanha.mybookstore.model.Book
 
 class HomeFragment : Fragment() {
+
+    private var _binding: FragmentHomeBinding? = null
+
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+    ): View {
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -38,7 +42,6 @@ class HomeFragment : Fragment() {
         }.toList()
 
         // Popular books recycler view
-        val popularBooksRecView = view.findViewById<RecyclerView>(R.id.popularBooksRecView)
         val popBooksAdapter = BookSmallAdapter { book ->
             val intent = Intent(requireContext(), BookActivity::class.java).apply {
                 putExtra("bookId", book.id)
@@ -46,8 +49,8 @@ class HomeFragment : Fragment() {
             }
             requireContext().startActivity(intent)
         }.apply { submitList(popItems) }
-        popularBooksRecView.adapter = popBooksAdapter
-        popularBooksRecView.setLayoutManager(
+        binding.popularBooksRecView.adapter = popBooksAdapter
+        binding.popularBooksRecView.setLayoutManager(
             LinearLayoutManager(
                 requireContext(),
                 LinearLayoutManager.HORIZONTAL,
@@ -56,20 +59,24 @@ class HomeFragment : Fragment() {
         )
 
         // New release books recycler view
-        val newReleaseBooksRecView = view.findViewById<RecyclerView>(R.id.newReleaseBooksRecView)
-        newReleaseBooksRecView.adapter = BookSmallAdapter { book ->
+        binding.newReleaseBooksRecView.adapter = BookSmallAdapter { book ->
             val intent = Intent(requireContext(), BookActivity::class.java).apply {
                 putExtra("bookId", book.id)
                 putExtra("fragmentName", "Home")
             }
             requireContext().startActivity(intent)
         }.apply { submitList(newItems) }
-        newReleaseBooksRecView.setLayoutManager(
+        binding.newReleaseBooksRecView.setLayoutManager(
             LinearLayoutManager(
                 requireContext(),
                 LinearLayoutManager.HORIZONTAL,
                 false
             )
         )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

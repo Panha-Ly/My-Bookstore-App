@@ -2,46 +2,43 @@ package com.lypanha.mybookstore
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.lypanha.mybookstore.databinding.ActivityLoginBinding
 import com.lypanha.mybookstore.model.User
 
 class LoginActivity : AppCompatActivity() {
-    private lateinit var edtEmail: EditText
-    private lateinit var edtPassword: EditText
-    private lateinit var btnLogin: Button
+
+    private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.enableEdgeToEdge()
-        setContentView(R.layout.activity_login)
-
+        enableEdgeToEdge()
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(
-            findViewById(R.id.main)
+            binding.main
         ) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        edtEmail = findViewById(R.id.edtEmail)
-        edtPassword = findViewById(R.id.edtPassword)
-        btnLogin = findViewById(R.id.btnLogin)
-
-        btnLogin.setOnClickListener {
-            if (edtEmail.text.isEmpty() || edtPassword.text.isEmpty()) {
-                if (edtEmail.text.isEmpty()) edtEmail.error = "Enter Email"
-                if (edtPassword.text.isEmpty()) edtPassword.error = "Enter Password"
+        binding.btnLogin.setOnClickListener {
+            if (binding.edtEmail.text.isEmpty() || binding.edtPassword.text.isEmpty()) {
+                if (binding.edtEmail.text.isEmpty()) binding.edtEmail.error = "Enter Email"
+                if (binding.edtPassword.text.isEmpty()) binding.edtPassword.error = "Enter Password"
             } else {
                 var loggedIn = false
                 for (user in Utils.users) {
-                    if (user.email.contentEquals(edtEmail.text) && user.password.contentEquals(edtPassword.text)) {
+                    if (user.email.contentEquals(binding.edtEmail.text) && user.password.contentEquals(
+                            binding.edtPassword.text
+                        )
+                    ) {
                         user.isLoginStatus = User.LOGGED_IN
                         loggedIn = true
                     }
@@ -59,9 +56,9 @@ class LoginActivity : AppCompatActivity() {
                         "Incorrect email or password",
                         Toast.LENGTH_SHORT
                     ).show()
-                    edtEmail.setText("")
-                    edtPassword.setText("")
-                    edtEmail.requestFocus()
+                    binding.edtEmail.setText("")
+                    binding.edtPassword.setText("")
+                    binding.edtEmail.requestFocus()
                 }
             }
         }

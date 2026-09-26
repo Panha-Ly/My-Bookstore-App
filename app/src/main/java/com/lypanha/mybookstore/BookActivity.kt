@@ -7,9 +7,6 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBar
@@ -19,15 +16,19 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.lypanha.mybookstore.Utils.addToCart
 import com.lypanha.mybookstore.Utils.removeFromCart
+import com.lypanha.mybookstore.databinding.ActivityBookBinding
 
 class BookActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityBookBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_book)
+        binding = ActivityBookBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(
-            findViewById(R.id.main)
+            binding.main
         ) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
@@ -49,31 +50,23 @@ class BookActivity : AppCompatActivity() {
             Log.d("", "Hi " + Build.VERSION.SDK_INT)
         }
 
-        val imgBook = findViewById<ImageView>(R.id.imgBook)
-        val txtName = findViewById<TextView>(R.id.txtBookName)
-        val txtAuthor = findViewById<TextView>(R.id.txtAuthor)
-        val txtPrice = findViewById<TextView>(R.id.txtPrice)
-        val txtDescription = findViewById<TextView>(R.id.txtBookDescription)
-        val txtPublicationDate = findViewById<TextView>(R.id.txtPublicationDate)
-        val btnCart = findViewById<Button>(R.id.btnCart)
-
         // Book details
         val bookId = intent.getIntExtra("bookId", -1)
         Utils.getBookById(bookId)?.let { book ->
-            imgBook.setImageResource(book.imageId)
-            txtName.text = book.name
-            txtAuthor.text = book.author
-            txtPrice.text = book.price
-            txtDescription.text = book.description
-            txtPublicationDate.text = book.publicationDate
+            binding.imgBook.setImageResource(book.imageId)
+            binding.txtBookName.text = book.name
+            binding.txtAuthor.text = book.author
+            binding.txtPrice.text = book.price
+            binding.txtBookDescription.text = book.description
+            binding.txtPublicationDate.text = book.publicationDate
         }
 
         // Cart button
         intent.getStringExtra("fragmentName")?.let { name ->
-            btnCart.text = resources.getText(
+            binding.btnCart.text = resources.getText(
                 if (name == "Cart") R.string.remove_from_cart else R.string.add_to_cart
             )
-            btnCart.setOnClickListener {
+            binding.btnCart.setOnClickListener {
                 val toastTxt = if (name == "Cart") {
                     if (removeFromCart(bookId)) "Removed from Cart" else "Already removed from Cart"
                 } else {
@@ -97,4 +90,5 @@ class BookActivity : AppCompatActivity() {
             finish()
             true
         } else super.onOptionsItemSelected(item)
+
 }

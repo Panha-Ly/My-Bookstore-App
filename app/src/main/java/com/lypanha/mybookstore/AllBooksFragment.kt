@@ -7,20 +7,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.lypanha.mybookstore.adapter.BookAdapterItem
 import com.lypanha.mybookstore.adapter.BookLargeAdapter
+import com.lypanha.mybookstore.databinding.FragmentAllBooksBinding
 import kotlin.random.Random
 
 class AllBooksFragment : Fragment() {
+
+    private var _binding: FragmentAllBooksBinding? = null
+
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_all_books, container, false)
+    ): View {
+        _binding = FragmentAllBooksBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,18 +35,22 @@ class AllBooksFragment : Fragment() {
             .map { BookAdapterItem.Content(it) }
             .shuffled(Random(69)) // Shuffle the books in the list
 
-        val allBooksRecView = view.findViewById<RecyclerView>(R.id.allBooksRecView)
-        allBooksRecView.layoutManager = LinearLayoutManager(
+        binding.allBooksRecView.layoutManager = LinearLayoutManager(
             requireContext(),
             LinearLayoutManager.VERTICAL,
             false
         )
-        allBooksRecView.adapter = BookLargeAdapter { book ->
+        binding.allBooksRecView.adapter = BookLargeAdapter { book ->
             val intent = Intent(requireContext(), BookActivity::class.java).apply {
                 putExtra("bookId", book.id)
                 putExtra("fragmentName", "All Books")
             }
             requireContext().startActivity(intent)
         }.apply { submitList(items) }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
