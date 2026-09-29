@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.lypanha.mybookstore.adapter.BookAdapterItem
 import com.lypanha.mybookstore.adapter.BookLargeAdapter
 import com.lypanha.mybookstore.databinding.FragmentCartBinding
@@ -31,37 +30,29 @@ class CartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val items: List<BookAdapterItem> = Utils.booksInCart
-            .map { BookAdapterItem.Content(it) }
-            .apply { binding.noBooksInCart.visibility = if (isEmpty()) View.VISIBLE else View.GONE }
+        val items: List<BookAdapterItem> = Utils.booksInCart.map { BookAdapterItem.Content(it) }
+        binding.noBooksInCart.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
 
-        adapter = BookLargeAdapter { book ->
+        BookLargeAdapter { book ->
             val intent = Intent(requireContext(), BookActivity::class.java).apply {
                 putExtra("bookId", book.id)
                 putExtra("fragmentName", "Cart")
             }
             requireContext().startActivity(intent)
-        }.apply { submitList(items) }
-        binding.cartRecView.adapter = this.adapter
-        binding.cartRecView.setLayoutManager(
-            LinearLayoutManager(
-                this.requireContext(),
-                LinearLayoutManager.VERTICAL,
-                false
-            )
-        )
+        }.apply {
+            submitList(items)
+        }.also {
+            binding.cartRecView.adapter = it
+            adapter = it
+        }
 
     }
 
     override fun onResume() {
         super.onResume()
-
-        Utils.booksInCart
-            .map { BookAdapterItem.Content(it) }
-            .apply { binding.noBooksInCart.visibility = if (isEmpty()) View.VISIBLE else View.GONE }
-            .also { freshItems: List<BookAdapterItem> ->
-                adapter.submitList(freshItems)
-            }
+        val freshItems: List<BookAdapterItem> = Utils.booksInCart.map { BookAdapterItem.Content(it) }
+        binding.noBooksInCart.visibility = if (freshItems.isEmpty()) View.VISIBLE else View.GONE
+        adapter.submitList(freshItems)
 
     }
 

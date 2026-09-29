@@ -42,6 +42,8 @@
     <string name="add_to_cart">Add to Cart</string>
     <string name="remove_from_cart">Remove from Cart</string>
     <string name="no_books_in_cart">No Books in Cart\nAdd more Books to Cart</string>
+    <string name="text_log_in">Log in</string>
+    <string name="go_back">Go back</string>
 
 
     <string name="lorem_ipsum">
@@ -81,5 +83,4 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
 
-    <string name="text_log_in">Log in</string>
 </resources>

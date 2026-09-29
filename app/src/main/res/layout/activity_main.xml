@@ -5,49 +5,38 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/Theme.Material3.DayNight.NoActionBar"
-    android:fitsSystemWindows="true"
-    tools:context=".MainActivity"
-    tools:openDrawer="start">
+    tools:context=".MainActivity">
 
     <RelativeLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="4dp"
-            android:fitsSystemWindows="true"
-            />
+            app:navigationContentDescription="@string/open"
+            app:navigationIcon="@drawable/baseline_menu_24"
+            app:navigationIconTint="?attr/colorSurfaceInverse"
+            app:title="" />
 
-        <androidx.core.widget.NestedScrollView
-            android:layout_below="@id/toolbar"
+        <FrameLayout
+            android:id="@+id/frame_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <FrameLayout
-                android:id="@+id/frame_container"
-                android:fitsSystemWindows="true"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
-        </androidx.core.widget.NestedScrollView>
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar" />
 
     </RelativeLayout>
-
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        android:background="@color/nav_background_color"
-        app:itemBackground="@color/nav_item_background_color"
-        app:itemTextColor="@color/nav_item_text_color"
-        android:theme="@style/Theme.MaterialComponents.DayNight"
         app:headerLayout="@layout/nav_header"
+        app:itemBackground="@drawable/drawer_item_bg_selector"
+        app:itemTextColor="@color/drawer_item_text_selector"
         app:menu="@menu/nav_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

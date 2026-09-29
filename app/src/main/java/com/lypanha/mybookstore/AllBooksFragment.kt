@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.lypanha.mybookstore.adapter.BookAdapterItem
 import com.lypanha.mybookstore.adapter.BookLargeAdapter
 import com.lypanha.mybookstore.databinding.FragmentAllBooksBinding
@@ -30,16 +29,11 @@ class AllBooksFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Add all books to the list
+        // All books list
         val items: List<BookAdapterItem> = Utils.allBooks
             .map { BookAdapterItem.Content(it) }
             .shuffled(Random(69)) // Shuffle the books in the list
 
-        binding.allBooksRecView.layoutManager = LinearLayoutManager(
-            requireContext(),
-            LinearLayoutManager.VERTICAL,
-            false
-        )
         binding.allBooksRecView.adapter = BookLargeAdapter { book ->
             val intent = Intent(requireContext(), BookActivity::class.java).apply {
                 putExtra("bookId", book.id)
