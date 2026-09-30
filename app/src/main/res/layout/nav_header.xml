@@ -36,7 +36,7 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/content_description"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_logo_round" />
+            tools:src="@drawable/pfp_bmo" />
 
         <TextView
             android:id="@+id/welcome"

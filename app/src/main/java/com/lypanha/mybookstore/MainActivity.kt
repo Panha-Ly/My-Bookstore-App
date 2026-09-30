@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
                     .setTitle(getString(R.string.app_name))
                     .setMessage("My Bookstore is Designed and Developed by Panha.\n\nApp Version : 1.0\n\nContact Us : panha@mail.com")
                     .setNeutralButton("Dismiss") { dialog, _ -> dialog.dismiss() }
-                    .setIcon(R.drawable.ic_logo)
+                    .setIcon(R.mipmap.ic_launcher)
                     .create().show()
                 binding.drawerLayout.close()
                 return@setNavigationItemSelectedListener false // don't check About Us item
