@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId = "com.lypanha.mybookstore"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
@@ -20,6 +20,7 @@ android {
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("debug")
             optimization {
                 // Enables code and resource optimizations if set to true.
                 enable = true
