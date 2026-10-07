@@ -2,7 +2,13 @@ package com.lypanha.mybookstore.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -53,6 +59,54 @@ fun BookCard(
 
 }
 
+@Composable
+fun DetailsBookCard(
+    book: Book,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+        ) {
+            Image(
+                painter = painterResource(book.imageId),
+                contentDescription = book.name,
+                modifier = Modifier.width(150.dp)
+            )
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .matchParentSize() // Binds the column height EXCLUSIVELY to the measured row height
+                        .padding(10.dp)
+                ) {
+                    Text(
+                        text = book.name,
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    Text(
+                        text = book.description,
+                        style = MaterialTheme.typography.bodyMedium,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+            }
+        }
+    }
+
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun BookCardPreview() {
@@ -62,6 +116,21 @@ private fun BookCardPreview() {
         ) {
             BookCard(
                 book = Utils.allBooks[6],
+                onClick = {}
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DetailsBookCardPreview() {
+    MyBookstoreTheme {
+        Surface(
+            color = Color.Red
+        ) {
+            DetailsBookCard(
+                book = Utils.allBooks[0],
                 onClick = {}
             )
         }
