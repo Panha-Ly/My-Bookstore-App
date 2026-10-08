@@ -1,46 +1,33 @@
 package com.lypanha.mybookstore
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material3.Surface
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import com.lypanha.mybookstore.adapter.BookAdapterItem
-import com.lypanha.mybookstore.adapter.BookLargeAdapter
-import com.lypanha.mybookstore.databinding.FragmentBookSeriesBinding
+import com.lypanha.mybookstore.ui.features.bookseries.BookSeriesScreen
+import com.lypanha.mybookstore.ui.theme.MyBookstoreTheme
 
 class BookSeriesFragment : Fragment() {
-
-    private var _binding: FragmentBookSeriesBinding? = null
-
-    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentBookSeriesBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val items: List<BookAdapterItem> = Utils.allBooksBySeries
-
-        binding.bookSeriesRecView.adapter = BookLargeAdapter { book ->
-            val intent = Intent(requireContext(), BookActivity::class.java).apply {
-                putExtra("bookId", book.id)
-                putExtra("fragmentName", "Book Series")
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MyBookstoreTheme {
+                    Surface {
+                        BookSeriesScreen()
+                    }
+                }
             }
-            requireContext().startActivity(intent)
-        }.apply { submitList(items) }
+        }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 }

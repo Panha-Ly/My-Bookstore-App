@@ -21,13 +21,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.lypanha.mybookstore.Utils
 import com.lypanha.mybookstore.model.Book
+import com.lypanha.mybookstore.model.BookSeries
 import com.lypanha.mybookstore.ui.theme.MyBookstoreTheme
 
 @Composable
@@ -107,6 +110,27 @@ fun DetailsBookCard(
 
 }
 
+@Composable
+fun BookSeriesCard(
+    bookSeries: BookSeries,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        shape = RectangleShape,
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+    ) {
+        Text(
+            text = bookSeries.name,
+            fontWeight = FontWeight.Bold,
+            fontSize = 22.sp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 5.dp)
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun BookCardPreview() {
@@ -132,6 +156,20 @@ private fun DetailsBookCardPreview() {
             DetailsBookCard(
                 book = Utils.allBooks[0],
                 onClick = {}
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BookSeriesCardPreview() {
+    MyBookstoreTheme {
+        Surface(
+            color = Color.Red
+        ) {
+            BookSeriesCard(
+                bookSeries = Utils.allBookSeriesNames[1]
             )
         }
     }

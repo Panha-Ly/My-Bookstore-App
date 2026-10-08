@@ -1,6 +1,5 @@
 package com.lypanha.mybookstore
 
-import com.lypanha.mybookstore.adapter.BookAdapterItem
 import com.lypanha.mybookstore.model.Book
 import com.lypanha.mybookstore.model.BookSeries
 import com.lypanha.mybookstore.model.User
@@ -315,20 +314,6 @@ object Utils {
             "The Maze Runner"
         )
     )
-
-    // books with series names list
-    val allBooksBySeries: List<BookAdapterItem> = allBookSeriesNames.flatMap { series ->
-        // 1. Create a list starting with the series header
-        val seriesHeader = listOf(BookAdapterItem.Header(series))
-
-        // 2. Filter the books that belong to this specific series
-        val matchingBooks = allBooks
-            .filter { book -> book.seriesId == series.seriesId }
-            .map { book -> BookAdapterItem.Content(book) }
-
-        // 3. Combine the header and the books for this series
-        seriesHeader + matchingBooks
-    }
 
     // books in cart list
     val booksInCart: MutableList<Book> = mutableListOf()
