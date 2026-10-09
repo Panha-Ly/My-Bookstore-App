@@ -1,5 +1,7 @@
 package com.lypanha.mybookstore
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.lypanha.mybookstore.model.Book
 import com.lypanha.mybookstore.model.BookSeries
 import com.lypanha.mybookstore.model.User
@@ -316,7 +318,7 @@ object Utils {
     )
 
     // books in cart list
-    val booksInCart: MutableList<Book> = mutableListOf()
+    val booksInCart: SnapshotStateList<Book> = mutableStateListOf()
 
     val users: List<User> = listOf(
         User(
