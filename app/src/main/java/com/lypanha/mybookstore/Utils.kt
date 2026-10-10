@@ -1,12 +1,23 @@
 package com.lypanha.mybookstore
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.lypanha.mybookstore.model.Book
 import com.lypanha.mybookstore.model.BookSeries
 import com.lypanha.mybookstore.model.User
 
 object Utils {
+
+    // App Theme constants
+    const val THEME_SYSTEM = "system"
+    const val THEME_DARK = "dark"
+    const val THEME_LIGHT = "light"
+
+    // App Theme
+    var appThemeMode by mutableStateOf(THEME_SYSTEM)
 
     // books list
     val allBooks: List<Book> = listOf(
