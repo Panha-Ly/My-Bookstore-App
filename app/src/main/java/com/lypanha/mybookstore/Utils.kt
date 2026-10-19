@@ -331,7 +331,7 @@ object Utils {
     // books in cart list
     val booksInCart: SnapshotStateList<Book> = mutableStateListOf()
 
-    val users: List<User> = listOf(
+    val users: SnapshotStateList<User> = mutableStateListOf(
         User(
             1,
             R.drawable.pfp_bmo,
@@ -350,6 +350,15 @@ object Utils {
         )
     )
 
+    fun setLoginStatus(userId: Int, isLoggedIn: Boolean) {
+        // Find the index of the user
+        val index = users.indexOfFirst { it.id == userId }
+
+        if (index != -1) {
+            // Replace the old item with a new copied instance to trigger recomposition
+            users[index] = users[index].copy(isLoginStatus = isLoggedIn)
+        }
+    }
 
     fun getBookById(bookId: Int): Book? = allBooks.find { book -> book.id == bookId }
 
