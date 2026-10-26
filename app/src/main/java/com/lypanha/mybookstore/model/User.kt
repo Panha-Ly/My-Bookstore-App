@@ -6,7 +6,7 @@ data class User(
     val username: String,
     val email: String,
     val password: String,
-    var isLoginStatus: Boolean
+    val isLoginStatus: Boolean
 ) {
     companion object {
         const val LOGGED_IN: Boolean = true

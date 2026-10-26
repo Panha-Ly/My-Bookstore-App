@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -35,20 +36,13 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true
         compose = true
     }
 }
 
 dependencies {
 
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.material)
     implementation(libs.androidx.core)
-    implementation(libs.androidx.navigation.fragment)
-    implementation(libs.androidx.navigation.ui)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
@@ -62,6 +56,12 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.lifecycle.runtime)
+
+    // Jetpack Compose Navigation
+    implementation(libs.androidx.navigation.compose)
+    // JSON serialization library, works with the Kotlin serialization plugin
+    implementation(libs.kotlinx.serialization.json)
+
     androidTestImplementation(composeBom)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

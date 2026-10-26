@@ -1,51 +1,39 @@
 <resources>
     <string name="app_name">My Bookstore</string>
 
-    <!--    Category Title-->
-    <string name="title_popular">Popular</string>
-    <string name="title_new_releases">New Releases</string>
-
-    <!--    Navigation name-->
-    <string name="nav_login">Log in</string>
-    <string name="nav_logout">Log out</string>
-    <string name="nav_home">Home</string>
-    <string name="nav_cart">Your cart</string>
-    <string name="nav_all_books">All Books</string>
-    <string name="nav_browse_by_series">Browse by Series</string>
-    <string name="nav_about_us">About Us</string>
-    <string name="nav_settings">Settings</string>
-
-    <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome!"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
-
-    <!--    Other-->
-    <string name="content_description">Image</string>
-    <string name="placeholder">Placeholder</string>
-    <string name="open">Open</string>
-    <string name="close">Close</string>
-    <string name="text_welcome">"Welcome Back, "</string>
-    <string name="text_email">user@mail.com</string>
-    <string name="text_night_mode">Night Mode</string>
-    <string name="text_off">Off</string>
-    <string name="text_on">On</string>
-    <string name="author">Author :\u0020</string> <!-- \u0020 = Whitespace -->
+    <string name="popular">Popular</string>
+    <string name="new_releases">New Releases</string>
+    <string name="logout">Log out</string>
+    <string name="home">Home</string>
+    <string name="your_cart">Your cart</string>
+    <string name="all_books">All Books</string>
+    <string name="browse_by_series">Browse by Series</string>
+    <string name="about_us">About Us</string>
+    <string name="settings">Settings</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="welcome_user" formatted="true">"Welcome! %s"</string>
+    <string name="author" formatted="true">Author : %s</string> <!-- \u0020 = Whitespace -->
     <string name="about">About</string>
-    <string name="publication_date">Publication Date :\u0020</string>
-    <string name="price">"Price : $ "</string>
+    <string name="publication_date" formatted="true">Publication Date : %s</string>
+    <string name="price" formatted="true">"Price : $%s"</string>
     <string name="add_to_cart">Add to Cart</string>
     <string name="remove_from_cart">Remove from Cart</string>
     <string name="no_books_in_cart">No Books in Cart\nAdd more Books to Cart</string>
-    <string name="text_log_in">Log in</string>
-    <string name="go_back">Go back</string>
-
-
+    <string name="log_in">Log in</string>
+    <string name="removed_from_cart">Removed from Cart</string>
+    <string name="already_removed_from_cart">Already removed from Cart</string>
+    <string name="added_to_cart">Added to Cart</string>
+    <string name="already_added_to_cart">Already added to Cart</string>
+    <string name="back_button">Back Button</string>
+    <string name="incorrect_email_or_password">Incorrect email or password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">Show password</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="alert">Alert</string>
+    <string name="menu_button">Menu Button</string>
+    <string name="theme">Theme</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
@@ -82,5 +70,6 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="logged_out">Logged out</string>
 
 </resources>

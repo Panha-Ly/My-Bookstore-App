@@ -1,19 +1,16 @@
 package com.lypanha.mybookstore.ui.features.login
 
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -38,9 +35,13 @@ import androidx.compose.material3.OutlinedSecureTextField
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -56,7 +57,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -72,14 +73,14 @@ import com.lypanha.mybookstore.ui.theme.MyBookstoreTheme
 import com.lypanha.mybookstore.ui.theme.accentColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun LoginScreen(
+    navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val resources = LocalResources.current
     val scope = rememberCoroutineScope()
     var isLoading by rememberSaveable { mutableStateOf(false) }
     var loginErrorCount by rememberSaveable { mutableIntStateOf(0) }
@@ -104,21 +105,21 @@ fun LoginScreen(
                     delay(2.seconds)
                     if (user != null) {
                         Utils.setLoginStatus(user.id, User.LOGGED_IN)
-                        backDispatcher?.onBackPressed()
+                        navigateUp()
                     } else {
                         isLoading = false
                         emailTextFieldState.clearText()
                         passwordTextFieldState.clearText()
                         loginErrorCount++ // trigger focus on email TextField
                         scope.launch {
-                            snackbarHostState.showSnackbar("Incorrect email or password")
+                            snackbarHostState.showSnackbar(resources.getString(R.string.incorrect_email_or_password))
                         }
                     }
                 }
             }
         },
         isLoading = isLoading,
-        onBackClick = { backDispatcher?.onBackPressed() },
+        onBackClick = navigateUp,
     )
 }
 
@@ -145,7 +146,7 @@ private fun LoginContent(
                         IconButton(onBackClick) {
                             Icon(
                                 painter = painterResource(R.drawable.baseline_arrow_back_ios_new_24),
-                                contentDescription = "Navigate Up"
+                                contentDescription = stringResource(R.string.back_button)
                             )
                         }
                     }
@@ -153,11 +154,24 @@ private fun LoginContent(
             },
             snackbarHost = {
                 SnackbarHost(
-                    snackbarHostState,
-                    Modifier
+                    hostState = snackbarHostState,
+                    modifier = Modifier
                         .consumeWindowInsets(WindowInsets.navigationBars) // 1. Consume the nav bar inset so the system knows it's already accounted for
                         .imePadding() // 2. Apply IME padding (it will now subtract the nav bar height automatically)
-                )
+                ) { snackbarData ->
+                    val dismissState = rememberSwipeToDismissBoxState()
+                    SwipeToDismissBox(
+                        state = dismissState,
+                        backgroundContent = {},
+                        onDismiss = { value ->
+                            if (value == SwipeToDismissBoxValue.StartToEnd ||
+                                value == SwipeToDismissBoxValue.EndToStart
+                            ) {
+                                snackbarData.dismiss()
+                            }
+                        }
+                    ) { Snackbar(snackbarData = snackbarData) }
+                }
             }
         ) { innerPadding ->
             Box(
@@ -191,11 +205,8 @@ private fun LoginContent(
             }
         }
     }
-
-
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun LoginCard(
     emailTextFieldState: TextFieldState,
@@ -205,9 +216,8 @@ private fun LoginCard(
     loginErrorCount: Int,
     modifier: Modifier = Modifier
 ) {
+    // Focus controller
     val scope = rememberCoroutineScope()
-    val isKeyboardOpen = WindowInsets.isImeVisible
-    val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
 
     var showPassword by rememberSaveable { mutableStateOf(false) }
@@ -226,18 +236,7 @@ private fun LoginCard(
 
     LaunchedEffect(loginErrorCount) {
         if (loginErrorCount > 0) {
-            scope.launch {
-                // requestFocus() will try to open the keyboard, if it is not open before.
-                // the if statement below make sure it keep being close, if the keyboard was closed.
-                focusRequester.requestFocus()
-                delay(50.milliseconds)
-                if (!isKeyboardOpen) {
-                    // In case of the keyboard is closed before log in button is clicked,
-                    // close the keyboard to keep it in closed state
-                    // when it is open by requestFocus().
-                    keyboardController?.hide()
-                }
-            }
+            scope.launch { focusRequester.requestFocus() }
         }
     }
 
@@ -255,12 +254,12 @@ private fun LoginCard(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = stringResource(R.string.text_log_in),
+                text = stringResource(R.string.log_in),
                 style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
             )
             OutlinedTextField(
                 state = emailTextFieldState,
-                label = { Text(stringResource(R.string.prompt_email)) },
+                label = { Text(stringResource(R.string.email)) },
                 colors = textFieldAccentColors,
                 lineLimits = TextFieldLineLimits.SingleLine,
                 keyboardOptions = KeyboardOptions(
@@ -272,7 +271,7 @@ private fun LoginCard(
                 isError = isDirty && emailTextFieldState.text.isEmpty(),
                 supportingText = {
                     if (isDirty && emailTextFieldState.text.isEmpty()) {
-                        TextFieldErrorLayout("Enter Email")
+                        TextFieldErrorLayout(stringResource(R.string.enter_email))
                     }
                 }
             )
@@ -283,7 +282,7 @@ private fun LoginCard(
                 } else {
                     TextObfuscationMode.RevealLastTyped // Or TextObfuscationMode.Hidden
                 },
-                label = { Text(stringResource(R.string.prompt_password)) },
+                label = { Text(stringResource(R.string.password)) },
                 colors = textFieldAccentColors,
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Done
@@ -295,7 +294,9 @@ private fun LoginCard(
                                 if (showPassword) R.drawable.visibility_off_24px
                                 else R.drawable.visibility_24px
                             ),
-                            contentDescription = if (showPassword) "Hide password" else "Show password"
+                            contentDescription = stringResource(
+                                if (showPassword) R.string.hide_password else R.string.show_password
+                            )
                         )
                     }
                 },
@@ -303,7 +304,7 @@ private fun LoginCard(
                 isError = isDirty && passwordTextFieldState.text.isEmpty(),
                 supportingText = {
                     if (isDirty && passwordTextFieldState.text.isEmpty()) {
-                        TextFieldErrorLayout("Enter Password")
+                        TextFieldErrorLayout(stringResource(R.string.enter_password))
                     }
                 }
             )
@@ -314,7 +315,7 @@ private fun LoginCard(
                     contentColor = Color.White,
                     containerColor = accentColor
                 ),
-            ) { Text(stringResource(R.string.text_log_in)) }
+            ) { Text(stringResource(R.string.log_in)) }
         }
 
     }
@@ -329,7 +330,7 @@ private fun TextFieldErrorLayout(message: String) {
     ) {
         Icon(
             painter = painterResource(id = R.drawable.error_24px),
-            contentDescription = "Alert",
+            contentDescription = stringResource(R.string.alert),
             modifier = Modifier.size(14.dp)
         )
         Text(text = message)
